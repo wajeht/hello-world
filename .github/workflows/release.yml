@@ -14,7 +14,7 @@ jobs:
   build:
     name: Build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       tag: ${{ steps.image-name.outputs.TAG }}
     steps:
@@ -71,7 +71,7 @@ jobs:
     if: >
       (github.event.action == 'labeled' && github.event.label.name == 'temp-deploy') ||
       (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'temp-deploy'))
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       tag: ${{ steps.image-name.outputs.TAG }}
     steps:
