@@ -38,3 +38,4 @@ await db.migrate.latest();
 console.log("Migrations complete");
 
 app.listen(port, () => console.log(`Server running on :${port}`));
+
