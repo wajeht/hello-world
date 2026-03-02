@@ -138,7 +138,7 @@ jobs:
     needs: temp-build
     permissions:
       deployments: write
-    uses: wajeht/docker-cd-deploy-workflow/.github/workflows/temp-deploy.yaml@v0.0.13
+    uses: wajeht/docker-cd-deploy-workflow/.github/workflows/temp-deploy.yaml@v0.0.15
     with:
       app-path: apps/hello-world
       tag: ${{ needs.temp-build.outputs.tag }}
