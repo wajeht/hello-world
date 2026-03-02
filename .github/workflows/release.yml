@@ -14,9 +14,11 @@ jobs:
   lint:
     name: Lint
     if: github.event_name == 'pull_request'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - uses: actions/setup-node@v4
         with:
@@ -25,14 +27,40 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run format:check
-
       - run: npm run lint:check
+
+  format:
+    name: Format
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run format
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "style: format codes"
+          file_pattern: "!.github/workflows/*.yml !.github/workflows/*.yaml"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     name: Build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.image-name.outputs.TAG }}
     steps:
@@ -89,7 +117,7 @@ jobs:
     if: >
       (github.event.action == 'labeled' && github.event.label.name == 'temp-deploy') ||
       (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'temp-deploy'))
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.image-name.outputs.TAG }}
     steps:
